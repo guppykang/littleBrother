@@ -8,6 +8,6 @@ module.exports = async (req, res) => {
   })
   
   const room = mongoose.model("Room", roomScheme);
-  return date;
+  return room;
 
 }
