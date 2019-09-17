@@ -22,12 +22,13 @@ module.exports = async (req, res, next) => {
     return next(err);
   }
 
-  //get new room code
-  newRoomCode = makeid(5);
 
 
   let roomExists = true;
   while(roomExists) {
+    //get new room code
+    newRoomCode = makeid(5);
+
     //check to see if the room exists
     roomExists = await Room.exists({ roomCode : newRoomCode });
 
