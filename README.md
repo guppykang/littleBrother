@@ -1,4 +1,3 @@
-## created with [blix](https://blixjs.com/)
+microservices directory holds zeit node js functions
 
-## Project Scripts
-
+src holds vue app

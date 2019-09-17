@@ -2,14 +2,7 @@
     <div>
         <Navbar />
         <div class="app">
-          <div class="app-header">
-            <img src="https://s3.us-east-2.amazonaws.com/blix/logo.png" alt="blix" class="logo-small"/>
-            <h1 class="app-title">Welcome to Blix</h1>
-              <p class="app-intro">
-              <a href="https://blixjs.com/" target="_blank" rel="noopener noreferrer">Automate all-the-things</a>
-              </p>
-          </div>
-          <img src="https://s3.us-east-2.amazonaws.com/blix/gear.svg" class="app-logo" alt="logo"/>
+          <label> Room code : ABCD </label>
         </div>
     </div>
 </template>
