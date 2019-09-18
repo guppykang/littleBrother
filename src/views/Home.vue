@@ -2,17 +2,19 @@
     <div>
         <Navbar />
         <div class="app">
-          <label> Room code : ABCD </label>
+          <RoomCode/>
         </div>
     </div>
 </template>
 
 <script>
 import Navbar from '../components/Navbar'
+import RoomCode from '../components/Room'
 
 export default {
     components: {
-        Navbar
+        Navbar, 
+        RoomCode
     }
 }
 </script>
