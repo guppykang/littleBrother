@@ -1,7 +1,9 @@
 <template> 
-  <span> Room number : {{ roomNumber }} </span>
-  <button v-on:click="getNewCode">New Game</button>
-
+  <div>
+    <span> Room number : {{ roomNumber }} </span>
+    <br>
+    <button @click="getNewCode">New Game</button>
+  </div>
 </template>
 
 <script>
@@ -15,6 +17,7 @@ export default {
   }, 
   methods : {
     async getNewCode() {
+      console.log('hi mom');
       let response; 
       try {
         response = await getNewRoomCode(); 
@@ -23,7 +26,7 @@ export default {
         console.log(err);   
       }
 
-      console.log(response);
+      console.log('inside the on click'  + JSON.stringify(response));
       this.roomNumber = response.code;
 
       return response;

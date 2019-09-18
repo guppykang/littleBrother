@@ -12,6 +12,7 @@ function makeid(length) {
 }
 
 module.exports = async (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   let Room; 
 
   //get Room model
@@ -19,7 +20,7 @@ module.exports = async (req, res, next) => {
     Room = await roomFunction();
   }
   catch(err) {
-    return next(err);
+    return res.send(err);
   }
 
 
