@@ -18,11 +18,12 @@ module.exports = async (req, res, next) => {
   //get Room model
   try {
     Room = await roomFunction();
+  console.log('hi mom');
   }
   catch(err) {
+    console.log(err)
     return res.send(err);
   }
-
 
 
   let roomExists = true;
@@ -31,13 +32,15 @@ module.exports = async (req, res, next) => {
     newRoomCode = makeid(5);
 
     //check to see if the room exists
-    roomExists = await Room.exists({ roomCode : newRoomCode });
+    roomExists = await Room.exists({ roomCode : newRoomCode, active : true });
 
+    console.log(roomExists);
     //don't forget to delete this room after the game is over
     let uploadResponse; 
     if(!roomExists) {
       try {
-        uploadResponse = await Room.create({ roomCode : newRoomCode}); 
+        console.log('creating the new room');
+        uploadResponse = await Room.update({ roomCode : newRoomCode } , { active : true }, { upsert: true } ); 
 
         res.json({ code : newRoomCode, exists : roomExists, uploaded : uploadResponse });
       }
