@@ -1,5 +1,5 @@
-const roomFunction = require('../models/room.js');
-
+const Room = require('../models');
+import connectToDatabase from '../mongoose_connections';
 
 function makeid(length) {
    var result           = '';
@@ -13,19 +13,10 @@ function makeid(length) {
 
 module.exports = async (req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  let Room; 
 
-  //get Room model
-  try {
-    Room = await roomFunction();
-  console.log('hi mom');
-  }
-  catch(err) {
-    console.log(err)
-    return res.send(err);
-  }
+  await connectToDatabase();
 
-
+  let newRoomCode; 
   let roomExists = true;
   while(roomExists) {
     //get new room code

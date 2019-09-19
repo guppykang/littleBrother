@@ -1,14 +1,10 @@
-const mongooseFunction = require('../mongoose_connections');
+import { model, Schema } from 'mongoose';
 
-module.exports = async (req, res) => {
-  const mongoose = await mongooseFunction();
-
-  const roomScheme = new mongoose.Schema({
-    roomCode: String,
-    active : Boolean 
-  })
+const roomScheme = new Schema({
+  roomCode: String,
+  active : Boolean 
+})
   
-  const room = mongoose.model("Room", roomScheme);
-  return room;
+const Room = model("Room", roomScheme);
 
-}
+export default Room;
