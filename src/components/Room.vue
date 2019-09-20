@@ -1,7 +1,7 @@
 <template> 
   <div>
-    <span> Room number : {{ roomNumber }} </span>
-    <br>
+    <span>Room Code : </span>
+    <input v-model="roomNumber" type="text"><br>
     <button @click="getNewCode">New Game</button>
   </div>
 </template>
@@ -17,18 +17,19 @@ export default {
   }, 
   methods : {
     async getNewCode() {
-      console.log('hi mom');
       let response; 
       try {
-        response = await getNewRoomCode(); 
+        response = await getNewRoomCode(this.roomNumber); 
       }
       catch (err) {
         console.log(err);   
       }
-
-      console.log('inside the on click'  + JSON.stringify(response));
-      this.roomNumber = response.code;
-
+      if(!response) {
+          alert('try a new code, that already exists')
+      }
+      else {
+          alert('game sucessfully created');
+      }
       return response;
     }
   }
