@@ -1,4 +1,4 @@
-const Room = require('../models');
+import { Room } from  '../models';
 import connectToDatabase from '../mongoose_connections';
 
 function makeid(length) {
@@ -31,7 +31,7 @@ module.exports = async (req, res, next) => {
     if(!roomExists) {
       try {
         console.log('creating the new room');
-        uploadResponse = await Room.update({ roomCode : newRoomCode } , { active : true }, { upsert: true } ); 
+        uploadResponse = await Room.updateOne({ roomCode : newRoomCode } , { active : true }, { upsert: true } ); 
 
         res.json({ code : newRoomCode, exists : roomExists, uploaded : uploadResponse });
       }
