@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
   await connectToDatabase();
 
   const newRoomCode = req.query["code"];
+  const username = req.query["username"];
 
   let roomExists = true;
   
@@ -19,7 +20,7 @@ module.exports = async (req, res) => {
   let uploadResponse;
   try {
     console.log('creating the new room')
-    uploadResponse = await Room.create({ roomCode : newRoomCode });
+    uploadResponse = await Room.create({ roomCode : newRoomCode, players : [username] });
     res.send(true);
   }
   catch(err) {

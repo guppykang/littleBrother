@@ -1,7 +1,11 @@
 <template> 
   <div>
+    <span>Usernname : </span> 
+    <input v-model="username" type="text" placeholder="guppykang"><br>
+    
+
     <span>Room Code : </span>
-    <input v-model="roomNumber" type="text"><br>
+    <input v-model="roomNumber" type="text" placeholder="himom"><br>
     <button @click="getNewCode">New Game</button>
   </div>
 </template>
@@ -12,14 +16,15 @@ import { getNewRoomCode } from '../api/room';
 export default {
   data: () => {
     return {
-      roomNumber : "hi mom"
+      roomNumber : "", 
+      username : ""
     }
   }, 
   methods : {
     async getNewCode() {
       let response; 
       try {
-        response = await getNewRoomCode(this.roomNumber); 
+        response = await getNewRoomCode(this.roomNumber, this.username); 
       }
       catch (err) {
         console.log(err);   
