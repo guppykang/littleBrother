@@ -4,7 +4,6 @@
         <div class="app">
           <RoomCode/>
         </div>
-        <router-link to="/himom">go to hi mom</router-link>
     </div>
 </template>
 

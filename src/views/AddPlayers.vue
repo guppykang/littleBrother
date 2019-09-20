@@ -1,14 +1,19 @@
 <template>
   <div> 
     <Navbar/>
-    <button>End Game</button><br> 
-    <span>Game Code : </span> 
+    <div class="app"> 
+      <router-link to="/">
+        <button @click="endGame">End Game</button>
+      </router-link><br>
+      <span>Game Code : {{code}} </span> 
+    </div>
   </div> 
 </template> 
 
 <script> 
 import Navbar from '../components/Navbar'
-import { mapActions, mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
+import { deleteRoomCode } from '../api/room'
 
 export default {
   components : {
@@ -20,7 +25,11 @@ export default {
     }
   }, 
   methods : {
-    ...mapMutations("room", ["setNewCode"])
+    ...mapMutations("room", ["setNewCode"]), 
+    async endGame() {
+      alert('end game: ' + this.code);        
+      await deleteRoomCode(this.code);
+    }
 
   }, 
   computed : {
@@ -30,5 +39,10 @@ export default {
 </script> 
 
 <style> 
-
+.app {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
