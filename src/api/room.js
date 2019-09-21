@@ -11,4 +11,9 @@ export async function getNewRoomCode(code, username) {
 export async function deleteRoomCode(code) {
   const response = await axios.get(`http://localhost:3000/api/deleteRoom.js?code=${code}`);
   return response.data;
+}; 
+
+export async function joinRoom(code, username) {
+   const response = await axios.get(`http://localhost:3000/api/joinRoom.js?code=${code}&username=${username}`); 
+  return response.data;
 }

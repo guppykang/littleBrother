@@ -9,11 +9,21 @@
     <span class="error-font" v-if="invalid">Room Code already in use</span><br>
 
     <button @click="getNewCode">Start New Game</button>
+    <br> 
+    <br> 
+
+    <span>Join a game room: </span>
+    <input v-model="joinCode" type="text" placeholder="yoyo"><br>
+
+    <span>Username</span>
+    <input v-model="usernameJoin" type="text" placeholder="guppykang"><br>
+    <button @click="joinRoom">Join</button>
+    <span class="error-font" v-if="!joinedStatus">Room does not exist</span><br>
   </div>
 </template>
 
 <script>
-import { getNewRoomCode } from '../api/room';
+import { getNewRoomCode, joinRoom } from '../api/room';
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -21,7 +31,10 @@ export default {
     return {
       roomNumber : "", 
       username : "",
-      invalid : false
+      invalid : false, 
+      joinCode : "", 
+      usernameJoin : "", 
+      joinedStatus : true
     }
   }, 
   methods : {
@@ -41,10 +54,21 @@ export default {
       else {
         this.setNewCode(this.roomNumber);
         alert('game sucessfully created');
-        this.$router.push({ path: '/himom'})
+        this.$router.push({ path: '/himom' })
 
       }
       return response;
+    }, 
+    async joinRoom(){
+      let joinedStatus = await joinRoom(this.joinCode, this.usernameJoin);
+      if (joinedStatus) {
+        alert('sucessfuly joined room');
+        this.$router.push({ path: '/himom' }); 
+      }
+      else {
+        alert('failed joining the room');
+          this.joinedStatus = false;
+      }
     }
   }, 
   computed : {

@@ -4,8 +4,9 @@
     <div class="app"> 
       <router-link to="/">
         <button @click="endGame">End Game</button>
-      </router-link><br>
+      </router-link><br><br>
       <span>Game Code : {{code}} </span> 
+      <span>Players: </span>
     </div>
   </div> 
 </template> 
