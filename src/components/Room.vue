@@ -16,9 +16,11 @@
     <input v-model="joinCode" type="text" placeholder="yoyo"><br>
 
     <span>Username</span>
-    <input v-model="usernameJoin" type="text" placeholder="guppykang"><br>
+    <input v-model="usernameJoin" type="text" placeholder="guppykang">
+    <span class="error-font" v-if="usernameExists">Username already exists</span><br>
+
     <button @click="joinRoom">Join</button>
-    <span class="error-font" v-if="!joinedStatus">Room does not exist</span><br>
+    <span class="error-font" v-if="!roomCodeExists">Room does not exist</span><br>
   </div>
 </template>
 
@@ -34,7 +36,8 @@ export default {
       invalid : false, 
       joinCode : "", 
       usernameJoin : "", 
-      joinedStatus : true
+      roomCodeExists : true, 
+      usernameExists : false 
     }
   }, 
   methods : {
@@ -61,13 +64,27 @@ export default {
     }, 
     async joinRoom(){
       let joinedStatus = await joinRoom(this.joinCode, this.usernameJoin);
-      if (joinedStatus) {
+
+      if (joinedStatus.codeExists && !joinedStatus.usernameExists) {
         alert('sucessfuly joined room');
+        this.setNewCode(this.joinCode);
         this.$router.push({ path: '/himom' }); 
       }
       else {
+        if (!joinedStatus.codeExists) {
+          this.roomCodeExists = false;
+        }
+        else {
+          this.roomCodeExists = true;
+        }
+        
+        if (joinedStatus.usernameExists) {
+          this.usernameExists = true;
+        }
+        else {
+          this.usernameExists = false;
+        }
         alert('failed joining the room');
-          this.joinedStatus = false;
       }
     }
   }, 

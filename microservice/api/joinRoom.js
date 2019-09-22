@@ -10,21 +10,32 @@ module.exports = async (req, res) => {
   const username = req.query["username"];
 
   try {
+    let returnPayload = {
+      codeExists : false, 
+      usernameExists : false
+    };
+
     let exists = await Room.exists({ roomCode : code }); 
     
-    console.log(exists);
-    
+    returnPayload.codeExists = exists;
+
     if(exists) {
-       let response = await Room.findOneAndUpdate({ roomCode : code }, { $push: { players : username } });
-      return res.send(true);
+      let usernameExists = await Room.exists({ roomCode : code, players : username });
+
+      returnPayload.usernameExists = usernameExists;
+      if (!usernameExists) {
+        let response = await Room.findOneAndUpdate({ roomCode : code }, { $push: { players : username } });
+      }
+
+      return res.json(returnPayload);
     }
     else {
-        return res.send(false);
+        return res.json(returnPayload);
     }
   }
   catch (err) {
     console.log(err);
-    return res.send(false);   
+    return res.send(err);   
   }
 }
  
