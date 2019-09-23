@@ -5,10 +5,9 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const helmet = require("helmet");
 const logger = require("morgan");
-
 
 
 if (!process.env.NODE_ENV) {
@@ -30,8 +29,16 @@ app.use((err, req, res, next) => {
   res.send({ error: err.message, status: err.status });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Worker ${process.pid} listening at port: ${port}`);
 });
 
+const io = require("socket.io")(server);
+
+io.on('connection', (socket) => {
+  socket.on('SEND_MESSAGE', (data) => {
+    console.log('node server received the message from client : ' + data);
+    io.emit('MESSAGE', data)
+  });
+});
 module.exports = app;
