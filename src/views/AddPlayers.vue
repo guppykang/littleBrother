@@ -57,9 +57,8 @@ export default {
 
     this.socket.on('RECEIVE_NEW_PLAYERS', (data) => {
       if(data.gameCode == this.code){
-          console.log('CODES ARE MATCHINNG');
-      }
         this.players.push(data.newPlayer);
+      }
     });
   }
 }

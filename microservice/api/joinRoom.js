@@ -12,7 +12,8 @@ module.exports = async (req, res) => {
   try {
     let returnPayload = {
       codeExists : false, 
-      usernameExists : false
+      usernameExists : false, 
+      players : []
     };
 
     let exists = await Room.exists({ roomCode : code }); 
@@ -23,8 +24,13 @@ module.exports = async (req, res) => {
       let usernameExists = await Room.exists({ roomCode : code, players : username });
 
       returnPayload.usernameExists = usernameExists;
+
+      let currentPlayers;
+
       if (!usernameExists) {
         let response = await Room.findOneAndUpdate({ roomCode : code }, { $push: { players : username } });
+        let doc = await Room.find({ roomCode : code });
+        returnPayload.players = doc[0].players;
       }
 
       return res.json(returnPayload);
