@@ -44,7 +44,7 @@ export default {
   }, 
   methods : {
     ...mapActions("room", ["setNewCode"]), 
-    ...mapActions("user", ["setNewUsername"]),
+    ...mapActions("user", ["setNewPlayers"]),
     async getNewCode() {
       let response; 
       try {
@@ -59,6 +59,7 @@ export default {
       }
       else {
         this.setNewCode(this.roomNumber);
+        this.setNewPlayers([ this.username ]);
         alert('game sucessfully created');
         this.$router.push({ path: '/himom' })
 
@@ -71,7 +72,7 @@ export default {
       if (joinedStatus.codeExists && !joinedStatus.usernameExists) {
         alert('sucessfuly joined room : '+ this.joinCode);
 
-        this.setNewUsername(joinedStatus.players);
+        this.setNewPlayers(joinedStatus.players);
 
         this.socket.emit('PLAYER_ADDED', {
           newPlayer : this.usernameJoin, 
@@ -100,7 +101,6 @@ export default {
   }, 
   computed : {
      ...mapState("room", ["code"]),
-     ...mapState("user", ["username"])
   }
 
 }

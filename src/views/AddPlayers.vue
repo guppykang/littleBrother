@@ -12,14 +12,15 @@
     <form @submit.prevent="sendMessage">
         <button type="submit" class="btn btn-success">Send</button>
     </form>
+
   </div> 
 </template> 
 
 <script> 
 import Navbar from '../components/Navbar'
-import { mapState } from 'vuex'
 import { deleteRoomCode } from '../api/room'
 import io from 'socket.io-client'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components : {
@@ -33,6 +34,7 @@ export default {
     }
   }, 
   methods : {
+    ...mapActions("user", ["setNewPlayers"]),
     async endGame() {
       alert('end game: ' + this.code);        
       await deleteRoomCode(this.code);
@@ -47,17 +49,21 @@ export default {
 
   }, 
   computed : {
-     ...mapState("room", ["code"])
+    ...mapState("room", ["code"]), 
+    ...mapState("user", ["activePlayers"])
   }, 
+  created() {
+    this.players = this.activePlayers;
+  },
   mounted() {
     this.socket.on('MESSAGE', (data) => {
       this.messages = [...this.messages, data];
-      // you can also do this.messages.push(data)
     });
 
     this.socket.on('RECEIVE_NEW_PLAYERS', (data) => {
       if(data.gameCode == this.code){
         this.players.push(data.newPlayer);
+        this.setNewPlayers(this.players); 
       }
     });
   }

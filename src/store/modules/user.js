@@ -1,16 +1,16 @@
 const state = {
-  username : "guppykang unknown"
+  activePlayers : []
 };
 
 const mutations = {
-  setUsername(state, newUsername) {
-      state.username = newUsername;
+  setPlayers(state, newUsername) {
+      state.activePlayers = newUsername;
   }
 };
 
 const actions = {
-    setNewUsername({ commit }, newUsername) {
-        commit("setUsername", newUsername);
+    setNewPlayers({ commit }, newUsername) {
+        commit("setPlayers", newUsername);
     }
 }
 
