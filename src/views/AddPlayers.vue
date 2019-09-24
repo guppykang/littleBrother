@@ -6,10 +6,9 @@
         <button @click="endGame">End Game</button>
       </router-link><br>
       <span>Game Code : {{code}} </span> <br>
-      <span>Players: </span>
     </div>
 
-    <span> {{messages}} </span>
+    <span> players : {{players}} </span>
     <form @submit.prevent="sendMessage">
         <button type="submit" class="btn btn-success">Send</button>
     </form>
@@ -28,9 +27,9 @@ export default {
   }, 
   data: () => {
     return {
-      roomCode : "", 
       socket : io('localhost:5000'), 
-      messages : [] 
+      messages : [], 
+      players : []
     }
   }, 
   methods : {
@@ -54,6 +53,13 @@ export default {
     this.socket.on('MESSAGE', (data) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data)
+    });
+
+    this.socket.on('RECEIVE_NEW_PLAYERS', (data) => {
+      if(data.gameCode == this.code){
+          console.log('CODES ARE MATCHINNG');
+      }
+        this.players.push(data.newPlayer);
     });
   }
 }

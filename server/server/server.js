@@ -40,5 +40,9 @@ io.on('connection', (socket) => {
     console.log('node server received the message from client : ' + data);
     io.emit('MESSAGE', data)
   });
+  socket.on('PLAYER_ADDED', (data) => {
+    console.log(data.newPlayer + ', ' + data.gameCode);
+    io.emit('RECEIVE_NEW_PLAYERS', data);  
+  });
 });
 module.exports = app;

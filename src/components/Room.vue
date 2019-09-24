@@ -27,6 +27,7 @@
 <script>
 import { getNewRoomCode, joinRoom } from '../api/room';
 import { mapActions, mapState } from 'vuex'
+import io from 'socket.io-client'
 
 export default {
   data: () => {
@@ -37,7 +38,8 @@ export default {
       joinCode : "", 
       usernameJoin : "", 
       roomCodeExists : true, 
-      usernameExists : false 
+      socket : io('localhost:5000'), 
+      usernameExists : false, 
     }
   }, 
   methods : {
@@ -67,6 +69,10 @@ export default {
 
       if (joinedStatus.codeExists && !joinedStatus.usernameExists) {
         alert('sucessfuly joined room');
+        this.socket.emit('PLAYER_ADDED', {
+          newPlayer : this.usernameJoin, 
+          gameCode : this.joinCode
+        });
         this.setNewCode(this.joinCode);
         this.$router.push({ path: '/himom' }); 
       }
@@ -86,7 +92,7 @@ export default {
         }
         alert('failed joining the room');
       }
-    }
+    }, 
   }, 
   computed : {
      ...mapState("room", ["code"])
