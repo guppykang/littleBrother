@@ -44,5 +44,8 @@ io.on('connection', (socket) => {
     console.log(data.newPlayer + ', ' + data.gameCode);
     io.emit('RECEIVE_NEW_PLAYERS', data);  
   });
+  socket.on('END_GAME', (data) => {
+    io.emit("END_GAME", data);
+  });
 });
 module.exports = app;

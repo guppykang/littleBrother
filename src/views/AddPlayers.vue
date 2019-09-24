@@ -3,12 +3,15 @@
     <Navbar/>
     <div class="app"> 
       <router-link to="/">
-        <button @click="endGame">End Game</button>
+        <button v-if="meIsMaster" @click="endGame">End Game</button>
       </router-link><br>
+      <span>Me : {{ me }}</span><br>
+      <span v-if="!meIsMaster">Player</span><br v-if="!meIsMaster">
+      <span v-if="meIsMaster">Owner</span><br v-if="meIsMaster">
       <span>Game Code : {{code}} </span> <br>
+      <span> players : {{players}} </span>
     </div>
 
-    <span> players : {{players}} </span>
     <form @submit.prevent="sendMessage">
         <button type="submit" class="btn btn-success">Send</button>
     </form>
@@ -38,6 +41,9 @@ export default {
     async endGame() {
       alert('end game: ' + this.code);        
       await deleteRoomCode(this.code);
+      this.socket.emit('END_GAME', {
+        gameCode : this.code
+      });
     }, 
     sendMessage(e) {
       e.preventDefault();
@@ -49,8 +55,8 @@ export default {
 
   }, 
   computed : {
-    ...mapState("room", ["code"]), 
-    ...mapState("user", ["activePlayers"])
+    ...mapState("room", ["code", "meIsMaster", "me"]), 
+    ...mapState("user", ["activePlayers"]), 
   }, 
   created() {
     this.players = this.activePlayers;
@@ -64,6 +70,12 @@ export default {
       if(data.gameCode == this.code){
         this.players.push(data.newPlayer);
         this.setNewPlayers(this.players); 
+      }
+    });
+
+    this.socket.on("END_GAME", (data) => {
+      if(data.gameCode == this.code && !this.meIsMaster) {
+        this.$router.push({ path : '/' });
       }
     });
   }

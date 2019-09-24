@@ -1,17 +1,31 @@
 const state = {
-    code : "hi mom"
+  code : "hi mom", 
+  me : "", 
+  meIsMaster : ""
 };
 
 const mutations = {
   setCode(state, newCode) {
       state.code = newCode;
+  }, 
+  setMe(state, newMe) {
+      state.me = newMe;
+  }, 
+  setMeIsMaster(state, newIsMaster) {
+      state.meIsMaster = newIsMaster;
   }
 };
 
 const actions = {
-    setNewCode({ commit }, newCode) {
-        commit("setCode", newCode);
-    }
+  setNewCode({ commit }, newCode) {
+      commit("setCode", newCode);
+  }, 
+  setNewMe({ commit }, newMe) {
+      commit("setMe", newMe);
+  }, 
+  setNewMeIsMaster({ commit }, newIsMaster) {
+      commit("setMeIsMaster", newIsMaster);
+  }
 }
 
 export default {

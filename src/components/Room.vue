@@ -43,7 +43,7 @@ export default {
     }
   }, 
   methods : {
-    ...mapActions("room", ["setNewCode"]), 
+    ...mapActions("room", ["setNewCode", "setNewMeIsMaster", "setNewMe"]), 
     ...mapActions("user", ["setNewPlayers"]),
     async getNewCode() {
       let response; 
@@ -59,7 +59,9 @@ export default {
       }
       else {
         this.setNewCode(this.roomNumber);
+        this.setNewMe(this.username);
         this.setNewPlayers([ this.username ]);
+        this.setNewMeIsMaster(true);
         alert('game sucessfully created');
         this.$router.push({ path: '/himom' })
 
@@ -73,6 +75,9 @@ export default {
         alert('sucessfuly joined room : '+ this.joinCode);
 
         this.setNewPlayers(joinedStatus.players);
+        this.setNewMe(this.usernameJoin);
+        this.setNewMeIsMaster(false);
+
 
         this.socket.emit('PLAYER_ADDED', {
           newPlayer : this.usernameJoin, 
