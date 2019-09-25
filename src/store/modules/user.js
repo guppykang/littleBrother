@@ -9,16 +9,22 @@ const mutations = {
       state.activePlayers = newUsername;
   }, 
   addTeamOne(state, username) {
-    state.teamOne.push(username);
     if(state.teamTwo.includes(username)) {
         state.teamTwo.splice(state.teamTwo.indexOf(username), 1 );
     }
-  },
-  addTeamTwo(state, username) {
-    state.teamTwo.push(username);
     if(state.teamOne.includes(username)) {
         state.teamOne.splice(state.teamOne.indexOf(username), 1 );
     }
+    state.teamOne.push(username);
+  },
+  addTeamTwo(state, username) {
+    if(state.teamOne.includes(username)) {
+        state.teamOne.splice(state.teamOne.indexOf(username), 1 );
+    }
+    if(state.teamTwo.includes(username)) {
+        state.teamTwo.splice(state.teamTwo.indexOf(username), 1 );
+    }
+    state.teamTwo.push(username);
   }
 };
 

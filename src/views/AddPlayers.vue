@@ -3,9 +3,7 @@
     <Navbar/>
     <div class="app"> 
 
-      <router-link to="/">
-        <button @click="endGame">End Game</button>
-      </router-link><br>
+      <button @click="endGame">End Game</button>
 
       <span>Me : {{ me }}</span><br>
       <span v-if="!meIsMaster">Player</span><br v-if="!meIsMaster">
@@ -15,14 +13,12 @@
       <span> players : {{players}} </span><br>
 
       <span>Team 1 : {{ teamOne }}</span>
-      <button @click="joinTeamOne">Join Team 1</button><br>
+      <button @click="joinTeamOne(1)">Join Team 1</button><br>
       
       <span>Team 2 : {{ teamTwo }}</span>
-      <button @click="joinTeamTwo">Join Team 2</button><br>
+      <button @click="joinTeamOne(2)">Join Team 2</button><br>
 
-      <router-link to="/game">
-        <button @click="startGame">Start Game </button>
-      </router-link><br>
+      <button @click="startGame">Start Game </button>
     </div>
 
 
@@ -78,23 +74,20 @@ export default {
           res : "submit button pressed"
       });
     }, 
-    async joinTeamOne() {
+    async joinTeamOne(team) {
       try {
-        await joinTeam(this.code, 1, this.me);
+        await joinTeam(this.code, team, this.me);
       }
       catch (err) {
         console.log(err);
       }
       
       this.socket.emit('TEAM_ADDED', {
-        team : 1,
+        team : team,
         newPlayer : this.me, 
-        gameCode : this.joinCode
+        gameCode : this.code, 
       });
     }, 
-    async joinTeamTwo() {
-      this.addNewTeamTwo(this.me); 
-    }
 
   }, 
   computed : {
@@ -117,13 +110,13 @@ export default {
     });
 
     this.socket.on("END_GAME", (data) => {
-      if(data.gameCode == this.code && !this.meIsMaster) {
+      if(data.gameCode == this.code ) {
         this.$router.push({ path : '/' });
       }
     });
 
     this.socket.on("START_GAME", (data) => {
-      if(data.gameCode == this.code && !this.meIsMaster) {
+      if(data.gameCode == this.code ) {
         this.$router.push({ path : '/game' });
       }
     });

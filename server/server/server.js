@@ -37,11 +37,9 @@ const io = require("socket.io")(server);
 
 io.on('connection', (socket) => {
   socket.on('SEND_MESSAGE', (data) => {
-    console.log('node server received the message from client : ' + data);
     io.emit('MESSAGE', data)
   });
   socket.on('PLAYER_ADDED', (data) => {
-    console.log(data.newPlayer + ', ' + data.gameCode);
     io.emit('RECEIVE_NEW_PLAYERS', data);  
   });
   socket.on('END_GAME', (data) => {

@@ -13,14 +13,16 @@ module.exports = async (req, res) => {
 
   try {
     if (team == 1) {
-      let deleteResponse = await Room.update({ roomCode : code, }, { $pull : { teamTwo : username } });
+      let deleteResponseOne = await Room.update({ roomCode : code, }, { $pull : { teamTwo : username } });
+      let deleteResponseTwo = await Room.update({ roomCode : code, }, { $pull : { teamOne : username } });
 
-      let addResponse = await Room.update({ roomCode : code }, { $pull : { teamOne : username } });
+      let addResponse = await Room.update({ roomCode : code }, { $push : { teamOne : username } });
     }
     else if (team == 2) {
-      let deleteResponse = await Room.update({ roomCode : code, }, { $pull : { teamOne : username } });
+      let deleteResponseOne = await Room.update({ roomCode : code, }, { $pull : { teamOne : username } });
+      let deleteResponseTwo = await Room.update({ roomCode : code, }, { $pull : { teamTwo : username } });
 
-      let addResponse = await Room.update({ roomCode : code }, { $pull : { teamTwo : username } });
+      let addResponse = await Room.update({ roomCode : code }, { $push : { teamTwo : username } });
     }
     res.send(true);
   }
