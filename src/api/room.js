@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 export async function getNewRoomCode(code, username) {
-  //const response = await axios.get('https://titanx.guppykang.now.sh/api/newRoom.js');
-
   const response = await axios.get(`http://localhost:3000/api/newRoom.js?code=${code}&username=${username}`);
-  console.log('full response from backend: ' + JSON.stringify(response));
   return response.data;
 };
 
@@ -15,5 +12,10 @@ export async function deleteRoomCode(code) {
 
 export async function joinRoom(code, username) {
    const response = await axios.get(`http://localhost:3000/api/joinRoom.js?code=${code}&username=${username}`); 
+  return response.data;
+};
+
+export async function joinTeam(code, team, username) {
+  const response = await axios.get(`http://localhost:3000/api/addToTeam.js?code=${code}&team=${team}&username=${username}`);
   return response.data;
 }

@@ -50,5 +50,8 @@ io.on('connection', (socket) => {
   socket.on('START_GAME', (data) => {
     io.emit("START_GAME", data);  
   });
+  socket.on('TEAM_ADDED', (data) => {
+    io.emit("TEAM_ADDED", data);
+  });
 });
 module.exports = app;

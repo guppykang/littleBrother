@@ -11,7 +11,14 @@
       <span v-if="!meIsMaster">Player</span><br v-if="!meIsMaster">
       <span v-if="meIsMaster">Owner</span><br v-if="meIsMaster">
       <span>Game Code : {{code}} </span> <br>
+
       <span> players : {{players}} </span><br>
+
+      <span>Team 1 : {{ teamOne }}</span>
+      <button @click="joinTeamOne">Join Team 1</button><br>
+      
+      <span>Team 2 : {{ teamTwo }}</span>
+      <button @click="joinTeamTwo">Join Team 2</button><br>
 
       <router-link to="/game">
         <button @click="startGame">Start Game </button>
@@ -24,7 +31,7 @@
 
 <script> 
 import Navbar from '../components/Navbar'
-import { deleteRoomCode } from '../api/room'
+import { deleteRoomCode, joinTeam } from '../api/room'
 import io from 'socket.io-client'
 import { mapActions, mapState } from 'vuex'
 
@@ -37,14 +44,12 @@ export default {
       socket : io('localhost:5000'), 
       messages : [], 
       players : [], 
-
     }
   }, 
   methods : {
-    ...mapActions("user", ["setNewPlayers"]),
+    ...mapActions("user", ["setNewPlayers", "addNewTeamOne", "addNewTeamTwo"]),
     async startGame() {
-      if(this.meIsMaster) {
-        alert('game Started');   
+      if(this.meIsMaster) {alert('game Started');   
 
         this.socket.emit('START_GAME', {
           gameCode : this.code
@@ -72,12 +77,29 @@ export default {
       this.socket.emit('SEND_MESSAGE', {
           res : "submit button pressed"
       });
+    }, 
+    async joinTeamOne() {
+      try {
+        await joinTeam(this.code, 1, this.me);
+      }
+      catch (err) {
+        console.log(err);
+      }
+      
+      this.socket.emit('TEAM_ADDED', {
+        team : 1,
+        newPlayer : this.me, 
+        gameCode : this.joinCode
+      });
+    }, 
+    async joinTeamTwo() {
+      this.addNewTeamTwo(this.me); 
     }
 
   }, 
   computed : {
     ...mapState("room", ["code", "meIsMaster", "me"]), 
-    ...mapState("user", ["activePlayers"]), 
+    ...mapState("user", ["activePlayers", "teamOne", "teamTwo"]), 
   }, 
   created() {
     this.players = this.activePlayers;
@@ -105,6 +127,18 @@ export default {
         this.$router.push({ path : '/game' });
       }
     });
+
+    this.socket.on("TEAM_ADDED", (data) => {
+      if(data.gameCode == this.code) {
+        if(data.team == 1) {
+          this.addNewTeamOne(data.newPlayer);
+        }
+        else if(data.team == 2) {
+          this.addNewTeamTwo(data.newPlayer);
+        }
+      }
+    });
+
   }
 }
 </script> 
