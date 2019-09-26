@@ -3,7 +3,7 @@
     <Navbar/>
     <div class="app"> 
 
-      <button @click="endGame">End Game</button>
+      <button @click="endGame">End Game</button><br>
 
       <span>Me : {{ me }}</span><br>
       <span v-if="!meIsMaster">Player</span><br v-if="!meIsMaster">
