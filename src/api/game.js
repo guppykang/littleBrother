@@ -7,9 +7,11 @@ export async function getWords() {
 
 export async function saveWords(team, code, words) {
   const payload = {
-    words : words
+    words, 
+    team : team, 
+    code : code
   }
-  const response = await axios.post(`http://localhost:3000/api/saveWords.js?team=${team}&code=${code}`, payload);
+  const response = await axios.post(`http://localhost:3000/api/saveWords.js`, payload);
 
   return response.data;
 };
@@ -17,4 +19,6 @@ export async function saveWords(team, code, words) {
 export async function getMyWords(team, code) {
     const resposne = await axios.get(`http://localhost:3000/api/getMyWords.js?team=${team}&code=${code}`);
     
-}
+  return response.data;
+};
+

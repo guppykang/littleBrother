@@ -51,6 +51,7 @@ export default {
         alert('game Started');   
         
         const teamOneWords = await getWords();
+        console.log(JSON.stringify(teamOneWords));
         const teamTwoWords = await getWords();
 
         await saveWords(1, this.code, teamOneWords);
