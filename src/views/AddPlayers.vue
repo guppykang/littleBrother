@@ -30,6 +30,7 @@ import Navbar from '../components/Navbar'
 import { deleteRoomCode, joinTeam } from '../api/room'
 import io from 'socket.io-client'
 import { mapActions, mapState } from 'vuex'
+import { getWords, saveWords } from '../api/game'
 
 export default {
   components : {
@@ -44,8 +45,16 @@ export default {
   }, 
   methods : {
     ...mapActions("user", ["setNewPlayers", "addNewTeamOne", "addNewTeamTwo"]),
+    ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
     async startGame() {
-      if(this.meIsMaster) {alert('game Started');   
+      if(this.meIsMaster) {
+        alert('game Started');   
+        
+        const teamOneWords = await getWords();
+        const teamTwoWords = await getWords();
+
+        await saveWords(1, this.code, teamOneWords);
+        await saveWords(2, this.code, teamTwoWords);
 
         this.socket.emit('START_GAME', {
           gameCode : this.code

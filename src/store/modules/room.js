@@ -1,7 +1,9 @@
 const state = {
   code : "hi mom", 
   me : "", 
-  meIsMaster : ""
+  meIsMaster : "", 
+  teamOneWords : [], 
+  teamTwoWords : [], 
 };
 
 const mutations = {
@@ -13,7 +15,13 @@ const mutations = {
   }, 
   setMeIsMaster(state, newIsMaster) {
       state.meIsMaster = newIsMaster;
-  }
+  }, 
+  setTeamOneWords(state, words) {
+      state.teamOneWords = words;
+  }, 
+  setTeamTwoWords(state, words) {
+      state.teamTwoWords = words;
+  }, 
 };
 
 const actions = {
@@ -25,6 +33,12 @@ const actions = {
   }, 
   setNewMeIsMaster({ commit }, newIsMaster) {
       commit("setMeIsMaster", newIsMaster);
+  }, 
+  setNewTeamOneWords({ commit }, newWords) {
+      commit("setTeamOneWords", newWords);
+  }, 
+  setNewTeamTwoWords({ commit }, newWords) {
+      commit("setTeamTwoWords", newWords);
   }
 }
 

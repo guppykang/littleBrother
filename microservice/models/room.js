@@ -4,7 +4,9 @@ const roomScheme = new Schema({
   roomCode: String, 
   players: [String], 
   teamOne : [String], 
-  teamTwo : [String]
+  teamTwo : [String], 
+  teamOneWords : [String], 
+  teamTwoWords : [String]
 })
   
 const Room = model("Room", roomScheme);

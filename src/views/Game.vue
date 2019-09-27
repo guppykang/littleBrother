@@ -10,7 +10,8 @@
 
 <script> 
 import Navbar from '../components/Navbar'
-import { getWords } from '../api/game'
+import { getMyWords } from '../api/game'
+import { mapActions, mapState } from 'vuex'
 
 export default {
 
@@ -23,13 +24,22 @@ export default {
     }
   }, 
   methods : {
+    ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
       
   }, 
   computed : {
-  
+    ...mapState("room", ["teamOneWords", "teamTwoWords", "me"]), 
+    ...mapState("user", ["teamOne", "teamTwo"]), 
   }, 
   async mounted() {
-    this.words = await getWords();  
+    if (this.teamOne.includes(this.me)) {
+      this.setNewTeamOneWords(await getMyWords());
+      this.words = this.teamOneWords;
+    }
+    else if (this.teamTwo.includes(this.me)) {
+      this.setNewTeamTwoWords(await getMyWords());
+      this.words = this.teamTwoWords;
+    }
   }
 }
 </script> 
