@@ -12,13 +12,13 @@ module.exports = async (req, res) => {
   if (team == 1) {
     let wordsQuery = await Room.find({ roomCode : code });
     let words = wordsQuery[0].teamOneWords;
-    res.send(words);
+    return res.send(words);
   }
   else if (team == 2) {
     let wordsQuery = await Room.find({ roomCode : code });
     let words = wordsQuery[0].teamTwoWords;
-    res.send(words);
+    return res.send(words);
   }
 
-  res.send(false);
+  return res.send(false);
 }

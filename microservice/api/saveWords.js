@@ -4,22 +4,34 @@ const connectToDatabase = require('../mongoose_connections');
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', '*');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method == 'OPTIONS') {
+    return res.send(true);
+  }
 
   await connectToDatabase();
-
-  let addResponse;
-
-
   console.log(req.body);
-  return res.send(true);
-  if (team == 1) {
-    addResponse = await Room.update({ roomCode : code }, { teamOneWords : words });
+
+  let addResponse = null;
+
+  let dict = [];
+  dict.push(req.body.words.first);
+  dict.push(req.body.words.second);
+  dict.push(req.body.words.third);
+  dict.push(req.body.words.fourth);
+
+  console.log(dict);
+
+  if (req.body.team == 1) {
+    console.log('team one');
+    addResponse = await Room.update({ roomCode : req.body.code }, { teamOneWords : dict});
   }
-  else if (team == 2) {
-    addResponse = await Room.update({ roomCode : code }, { teamTwoWords : words });
+  else if (req.body.team == 2) {
+    console.log('team two');
+    addResponse = await Room.update({ roomCode : req.body.code }, { teamTwoWords : dict});
   }
 
-  res.send(addResponse);
+  return res.send(true);
 
 };

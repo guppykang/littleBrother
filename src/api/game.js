@@ -17,7 +17,7 @@ export async function saveWords(team, code, words) {
 };
 
 export async function getMyWords(team, code) {
-    const resposne = await axios.get(`http://localhost:3000/api/getMyWords.js?team=${team}&code=${code}`);
+    const response = await axios.get(`http://localhost:3000/api/getMyWords.js?team=${team}&code=${code}`);
     
   return response.data;
 };

@@ -51,7 +51,6 @@ export default {
         alert('game Started');   
         
         const teamOneWords = await getWords();
-        console.log(JSON.stringify(teamOneWords));
         const teamTwoWords = await getWords();
 
         await saveWords(1, this.code, teamOneWords);
@@ -127,6 +126,7 @@ export default {
 
     this.socket.on("START_GAME", (data) => {
       if(data.gameCode == this.code ) {
+        console.log('go to game route');  
         this.$router.push({ path : '/game' });
       }
     });

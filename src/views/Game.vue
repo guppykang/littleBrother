@@ -2,7 +2,7 @@
   <div> 
     <Navbar/>
     <div class="app">
-      <span> hi mom {{ words }}</span> 
+      <span> {{ words }} </span> 
     </div>
   </div>
 
@@ -28,16 +28,25 @@ export default {
       
   }, 
   computed : {
-    ...mapState("room", ["teamOneWords", "teamTwoWords", "me"]), 
+    ...mapState("room", ["code", "teamOneWords", "teamTwoWords", "me"]), 
     ...mapState("user", ["teamOne", "teamTwo"]), 
   }, 
   async mounted() {
+    console.log(this.teamOne + ' in ' + this.me);
     if (this.teamOne.includes(this.me)) {
-      this.setNewTeamOneWords(await getMyWords());
+      let wordsRes ; 
+      try {
+        wordsRes = await getMyWords(1, this.code);
+      }
+      catch (err) {
+        console.log(err);
+      }
+      console.log(wordsRes);
+      this.setNewTeamOneWords(wordsRes);
       this.words = this.teamOneWords;
     }
     else if (this.teamTwo.includes(this.me)) {
-      this.setNewTeamTwoWords(await getMyWords());
+      this.setNewTeamTwoWords(await getMyWords(2, this.code));
       this.words = this.teamTwoWords;
     }
   }
