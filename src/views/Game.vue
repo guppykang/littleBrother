@@ -16,7 +16,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
 
   components : {
-    Navbar        
+    Navbar, 
   }, 
   data: () => {
     return {
@@ -37,17 +37,25 @@ export default {
       let wordsRes ; 
       try {
         wordsRes = await getMyWords(1, this.code);
+        this.setNewTeamOneWords(wordsRes);
+        this.words = this.teamOneWords;
       }
       catch (err) {
         console.log(err);
       }
       console.log(wordsRes);
-      this.setNewTeamOneWords(wordsRes);
-      this.words = this.teamOneWords;
     }
     else if (this.teamTwo.includes(this.me)) {
-      this.setNewTeamTwoWords(await getMyWords(2, this.code));
-      this.words = this.teamTwoWords;
+      let wordsRes ; 
+      try {
+        wordsRes = await getMyWords(2, this.code);
+        this.setNewTeamTwoWords(await getMyWords(2, this.code));
+        this.words = this.teamTwoWords;
+      }
+      catch (err) {
+        console.log(err);
+      }
+      console.log(wordsRes);
     }
   }
 }
