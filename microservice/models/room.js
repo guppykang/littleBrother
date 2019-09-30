@@ -8,7 +8,7 @@ const roomScheme = new Schema({
   teamOneWords : [String], 
   teamTwoWords : [String], 
   teamOneCode : [Number], 
-  teamTwoCode : [Number]
+  teamTwoCode : [Number], 
 })
   
 const Room = model("Room", roomScheme);

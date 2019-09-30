@@ -2,7 +2,8 @@
   <div> 
     <Navbar/>
     <div class="app">
-      <span> {{ words }} </span> 
+      <span> {{ words }} </span> <br>
+      <span v-if="isMyTurn"> {{ sequence }} </span>
     </div>
   </div>
 
@@ -10,7 +11,7 @@
 
 <script> 
 import Navbar from '../components/Navbar'
-import { getMyWords } from '../api/game'
+import { getMyWords, getCode } from '../api/game'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -20,7 +21,9 @@ export default {
   }, 
   data: () => {
     return {
-      words : []      
+      words : [], 
+      isMyTurn : "", 
+      sequence : ""
     }
   }, 
   methods : {
@@ -32,8 +35,13 @@ export default {
     ...mapState("user", ["teamOne", "teamTwo"]), 
   }, 
   async mounted() {
-    console.log(this.teamOne + ' in ' + this.me);
     if (this.teamOne.includes(this.me)) {
+
+      console.log('hi mom');
+      if (this.teamOne.indexOf(this.me) == 0) {
+        this.isMyTurn = true;
+        this.sequence = await getCode(1, this.code ); 
+      }
       let wordsRes ; 
       try {
         wordsRes = await getMyWords(1, this.code);

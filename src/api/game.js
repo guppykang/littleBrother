@@ -17,8 +17,13 @@ export async function saveWords(team, code, words) {
 };
 
 export async function getMyWords(team, code) {
-    const response = await axios.get(`http://localhost:3000/api/getMyWords.js?team=${team}&code=${code}`);
+  const response = await axios.get(`http://localhost:3000/api/getMyWords.js?team=${team}&code=${code}`);
     
   return response.data;
 };
 
+export async function getCode(team, code) {
+  const response = await axios.post(`http://localhost:3000/api/getCode.js?team=${team}&code=${code}`);
+
+  return response.data;
+}

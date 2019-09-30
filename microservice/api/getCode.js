@@ -33,14 +33,13 @@ module.exports = async (req, res) => {
   const code = [first, second, third];
 
   if (team == 1) {
-    console.log(roomCode + team + code);
-    let addCodeResponse = await Room.update({ roomCode : roomCode }, { teamOneCode : code });
-    return res.send(addCodeResponse);
+    let addCodeResponse = await Room.update({ roomCode : roomCode }, { $push : { teamOneCode : code } });
+    return res.send(code);
   }
   else if (team == 2) {
-    let addCodeResponse = await Room.update({ roomCode : roomCode }, { teamTwoCode : code });
-    return res.send(addCodeResponse);
+    let addCodeResponse = await Room.update({ roomCode : roomCode }, { $push : { teamTwoCode : code } });
+    return res.send(code);
   }
 
-  res.send(code);
+  res.send(false);
 }
