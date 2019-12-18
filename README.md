@@ -1,3 +1,8 @@
+# Little Brother
+
+Little brother is a multiplayer word game you can play with friends
+
+
 microservices directory holds zeit node js functions
 
 src holds vue app
