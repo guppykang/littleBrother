@@ -26,6 +26,7 @@
 
 <script>
 import { getNewRoomCode, joinRoom } from '../api/room';
+import { getStartGame } from '../api/game';
 import { mapActions, mapState } from 'vuex'
 import io from 'socket.io-client'
 
@@ -69,6 +70,15 @@ export default {
       return response;
     }, 
     async joinRoom(){
+      let gameStartedResponse = await getStartGame(this.joinCode);
+
+      if (gameStartedResponse) { 
+        alert('game already started. Consult game master.');
+        return;
+      }
+
+
+
       let joinedStatus = await joinRoom(this.joinCode, this.usernameJoin);
 
       if (joinedStatus.codeExists && !joinedStatus.usernameExists) {

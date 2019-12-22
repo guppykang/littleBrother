@@ -27,3 +27,15 @@ export async function getCode(team, code) {
 
   return response.data;
 }
+
+export async function setStartGame(code) {
+  const response = await axios.post(`http://localhost:3000/api/setStartGame.js?code=${code}`);
+
+  return response.data;
+}
+
+export async function getStartGame(code) {
+  const response = await axios.post(`http://localhost:3000/api/getStartGame.js?code=${code}`);
+
+  return response.data;
+}

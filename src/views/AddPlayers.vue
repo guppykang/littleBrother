@@ -30,7 +30,7 @@ import Navbar from '../components/Navbar'
 import { deleteRoomCode, joinTeam } from '../api/room'
 import io from 'socket.io-client'
 import { mapActions, mapState } from 'vuex'
-import { getWords, saveWords } from '../api/game'
+import { setStartGame, getWords, saveWords } from '../api/game'
 
 export default {
   components : {
@@ -56,9 +56,13 @@ export default {
         await saveWords(1, this.code, teamOneWords);
         await saveWords(2, this.code, teamTwoWords);
 
+        await setStartGame(this.code);
+
         this.socket.emit('START_GAME', {
           gameCode : this.code
         });
+
+        
       }
       else {
         alert('You are not the owner of the game. Ask the Owner to start the game');
