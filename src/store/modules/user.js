@@ -8,6 +8,22 @@ const mutations = {
   setPlayers(state, newUsername) {
       state.activePlayers = newUsername;
   }, 
+  setTeamOnePlayers(state, players) {
+    if (players) {
+      state.teamOne = players;
+    }
+    else {
+      state.teamOne = []
+    }
+  }, 
+  setTeamTwoPlayers(state, players) {
+    if (players) {
+      state.teamTwo = players;
+    }
+    else {
+      state.teamTwo = []
+    }
+  }, 
   addTeamOne(state, username) {
     if(state.teamTwo.includes(username)) {
         state.teamTwo.splice(state.teamTwo.indexOf(username), 1 );
@@ -31,6 +47,12 @@ const mutations = {
 const actions = {
   setNewPlayers({ commit }, newUsername) {
     commit("setPlayers", newUsername);
+  }, 
+  setTeamOne({ commit }, players) {
+    commit("setTeamOnePlayers", players);
+  }, 
+  setTeamTwo({ commit }, players) {
+    commit("setTeamTwoPlayers", players);
   }, 
   addNewTeamOne({ commit }, newUsername) {
     commit("addTeamOne", newUsername); 

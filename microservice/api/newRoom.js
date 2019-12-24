@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
   let uploadResponse;
   try {
     console.log('creating the new room')
-    uploadResponse = await Room.create({ roomCode : newRoomCode, players : [username], startGame : false});
+    uploadResponse = await Room.create({ roomCode : newRoomCode, players : [username], startGame : false, turn : 1 });
     res.send(true);
   }
   catch(err) {

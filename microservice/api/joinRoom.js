@@ -14,6 +14,8 @@ module.exports = async (req, res) => {
       codeExists : false, 
       usernameExists : false, 
       players : [], 
+      teamOne : [], 
+      teamTwo : []
     };
 
     let exists = await Room.exists({ roomCode : code }); 
@@ -32,6 +34,8 @@ module.exports = async (req, res) => {
         let doc = await Room.find({ roomCode : code });
 
         returnPayload.players = doc[0].players;
+        returnPayload.teamOne = doc[0].teamOne;
+        returnPayload.teamTwo = doc[0].teamTwo;
       }
 
       return res.json(returnPayload);

@@ -9,7 +9,8 @@ const roomScheme = new Schema({
   teamTwoWords : [String], 
   teamOneCode : [Number], 
   teamTwoCode : [Number], 
-  startGame : Boolean
+  startGame : Boolean, 
+  turn : Number
 })
   
 const Room = model("Room", roomScheme);
