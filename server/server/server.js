@@ -51,5 +51,12 @@ io.on('connection', (socket) => {
   socket.on('TEAM_ADDED', (data) => {
     io.emit("TEAM_ADDED", data);
   });
+  socket.on('SUBMITTED', (data) => {
+    io.emit("SUBMITTED", data);  
+  });
+  socket.on('NEXT_TURN', (data) => {
+    io.emit("NEXT_TURN", data);  
+  });
+
 });
 module.exports = app;

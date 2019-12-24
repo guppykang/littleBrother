@@ -48,6 +48,10 @@ export default {
     ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
     async startGame() {
       if(this.meIsMaster) {
+        if(this.teamOne.length < 2 || this.teamTwo.length < 2) {
+          alert('you need at least two people per team to start a game');
+          return;
+        }
         alert('game Started');   
         
         const teamOneWords = await getWords();

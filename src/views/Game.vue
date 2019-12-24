@@ -109,11 +109,11 @@ export default {
     }
 
     this.socket.on('NEXT_TURN', (data) => {
-      if(data.gameCode == this.code) {
+      if(data.gameCode == this.code && data.team == this.myTeam)  {
         this.isMyTurn = !this.isMyTurn;
 
+        let next_index = -1;
 
-        console.log('I am hinter')
         if (data.team == this.myTeam) {
           if (data.team == 1) {
             next_index = data.index + 1;
@@ -133,18 +133,21 @@ export default {
           }
         }
       }
+      else if(data.gameCode == this.code && data.team != this.myTeam) {
+         this.isMyTurn = !this.isMyTurn; 
+      }
     });
 
     this.socket.on('SUBMITTED', (data) => {
-      console.log('in here');
-      console.log(data);
-
       if(data.gameCode == this.code && data.team == this.myTeam) {
         this.submitted = true;
 
+        console.log(this.hinter)
+
 
         if (this.hinter) {
-
+          console.log('I am hinter')
+          console.log('passing on to next hinter');
           this.nextTurn();
         }
       }
