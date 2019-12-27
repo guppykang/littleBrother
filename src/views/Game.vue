@@ -2,7 +2,7 @@
   <div> 
     <Navbar/>
     <div class="app">
-
+      <span v-if="hinter"> You are the hinter for this round </span> <br v-if="hinter">
       <span> {{ words }} </span> <br>
       <span v-if="hinter"> {{ sequence }} </span>
       <input v-if="isMyTurn && !hinter" v-model="finalAnswer" placeholder="final answer">
@@ -48,6 +48,8 @@ export default {
       else {
         index = this.teamTwo.indexOf(this.me);
       }
+
+      this.hinter = false;
 
       this.socket.emit('NEXT_TURN', {
         gameCode : this.code, 
@@ -96,6 +98,11 @@ export default {
 
       this.isMyTurn = false
 
+      if (this.teamTwo.indexOf(this.me) == 0) {
+        this.hinter = true
+        this.sequence = await getCode(2, this.code ); 
+      }
+
       let wordsRes ; 
       try {
         wordsRes = await getMyWords(2, this.code);
@@ -121,6 +128,7 @@ export default {
 
             if (this.teamOne.indexOf(this.me) == next_index) {
               this.hinter = true;
+              console.log("I'm the new hinter");
             }
           }
           else {
@@ -129,9 +137,12 @@ export default {
 
             if (this.teamTwo.indexOf(this.me) == next_index) {
               this.hinter = true;
+              console.log("I'm the new hinter");
             }
           }
+          console.log(this.hinter);
         }
+        this.submitted = false;
       }
       else if(data.gameCode == this.code && data.team != this.myTeam) {
          this.isMyTurn = !this.isMyTurn; 
@@ -141,9 +152,6 @@ export default {
     this.socket.on('SUBMITTED', (data) => {
       if(data.gameCode == this.code && data.team == this.myTeam) {
         this.submitted = true;
-
-        console.log(this.hinter)
-
 
         if (this.hinter) {
           console.log('I am hinter')
