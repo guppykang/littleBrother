@@ -57,6 +57,9 @@ io.on('connection', (socket) => {
   socket.on('NEXT_TURN', (data) => {
     io.emit("NEXT_TURN", data);  
   });
+  socket.on('END_GAME', (data) => {
+    io.emit("END_GAME", data);
+  });
 
 });
 module.exports = app;
