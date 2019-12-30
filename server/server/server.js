@@ -60,6 +60,13 @@ io.on('connection', (socket) => {
   socket.on('END_GAME', (data) => {
     io.emit("END_GAME", data);
   });
+  socket.on('HINTS', (data) => {
+    io.emit("HINTS", data);
+  });
+  socket.on('GUESS_SUBMITTED', (data) => {
+    io.emit("GUESS_SUBMITTED", data);
+  });
+
 
 });
 module.exports = app;

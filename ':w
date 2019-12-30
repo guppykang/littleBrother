@@ -19,8 +19,7 @@
       <span v-if="hinter"> {{ sequence }} </span>
 
       <input v-if="isMyTurn && !hinter" v-model="finalAnswer" placeholder="final answer">
-      <button v-if="isMyTurn && !submitted && !hinter && guessSubmitted" @click="submitAnswer"> final answer submit </button> 
-      <span v-if="!guessSubmitted && isMyTurn"> Other team must guess first </span><br>
+      <button v-if="isMyTurn && !submitted && !hinter" @click="submitAnswer"> final submit </button> 
 
 
       <input v-if="!isMyTurn" v-model="finalGuess" placeholder="final guess">
@@ -247,7 +246,6 @@ export default {
 
     this.socket.on('GUESS_SUBMITTED', (data) => {
       if(data.gameCode == this.code) {
-        this.guessSubmitted = true;
         this.finalGuess = data.guess;
       }
     });
@@ -274,21 +272,6 @@ export default {
               this.score[2] += 1;
             }
           }
-
-          stringSequence = ""
-          for (i = 0; i < this.finalGuess.length; i++) {
-            stringSequence += this.finalGuess[i];
-          }
-
-          if (stringSequence == data.guess) {
-            if (data.team == 1) {
-              this.score[2] += 1;
-            }
-            else {
-              this.score[0] += 1;
-            }
-          }
-
 
           if (this.score[0] > 3 ) {
             this.socket.emit('END_GAME', {
