@@ -275,12 +275,7 @@ export default {
             }
           }
 
-          stringSequence = ""
-          for (i = 0; i < this.finalGuess.length; i++) {
-            stringSequence += this.finalGuess[i];
-          }
-
-          if (stringSequence == data.guess) {
+          if (stringSequence == this.finalGuess) {
             if (data.team == 1) {
               this.score[2] += 1;
             }
