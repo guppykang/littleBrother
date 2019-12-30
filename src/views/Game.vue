@@ -28,6 +28,17 @@
 
       <span v-if="submitted"> you or a teammate submitted the final answer </span>
 
+      <br>
+      <br>
+      <br>
+      <br>
+      <span> Their hints : {{ otherHints }} </span>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <span> Our hints : {{ myHints }} </span>
     </div>
   </div>
 
