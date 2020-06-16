@@ -14,7 +14,7 @@
       <span>Game Code : {{code}}</span>
       <br />
 
-      <span>players : {{players}}</span>
+      <span>players : {{this.activePlayers}}</span>
       <br />
 
       <span>Team 1 : {{ teamOne }}</span>
@@ -44,12 +44,16 @@ export default {
   data: () => {
     return {
       socket: io("localhost:5000", { transports: ["websocket"] }),
-      messages: [],
-      players: []
+      messages: []
     };
   },
   methods: {
-    ...mapActions("user", ["setNewPlayers", "addNewTeamOne", "addNewTeamTwo"]),
+    ...mapActions("user", [
+      "setNewPlayers",
+      "addNewPlayer",
+      "addNewTeamOne",
+      "addNewTeamTwo"
+    ]),
     ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
     async startGame() {
       if (this.meIsMaster) {
@@ -114,9 +118,6 @@ export default {
     ...mapState("room", ["code", "meIsMaster", "me"]),
     ...mapState("user", ["activePlayers", "teamOne", "teamTwo"])
   },
-  created() {
-    this.players = this.activePlayers;
-  },
   mounted() {
     this.socket.on("MESSAGE", data => {
       this.messages = [...this.messages, data];
@@ -124,8 +125,7 @@ export default {
 
     this.socket.on("RECEIVE_NEW_PLAYERS", data => {
       if (data.gameCode == this.code) {
-        this.players.push(data.newPlayer);
-        this.setNewPlayers(this.players);
+        this.addNewPlayer(data.newPlayer);
       }
     });
 

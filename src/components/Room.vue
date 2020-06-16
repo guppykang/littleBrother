@@ -23,7 +23,7 @@
     <span class="error-font" v-if="usernameExists">Username already exists</span>
     <br />
 
-    <button @click="joinRoom">Join</button>
+    <button @click="joinRoomHandler">Join</button>
     <span class="error-font" v-if="!roomCodeExists">Room does not exist</span>
     <br />
   </div>
@@ -50,7 +50,12 @@ export default {
   },
   methods: {
     ...mapActions("room", ["setNewCode", "setNewMeIsMaster", "setNewMe"]),
-    ...mapActions("user", ["setNewPlayers", "setTeamOne", "setTeamTwo"]),
+    ...mapActions("user", [
+      "setNewPlayers",
+      "addNewPlayer",
+      "setTeamOne",
+      "setTeamTwo"
+    ]),
     async getNewCode() {
       let response;
       try {
@@ -71,7 +76,7 @@ export default {
       }
       return response;
     },
-    async joinRoom() {
+    async joinRoomHandler() {
       let gameStartedResponse = await getStartGame(this.joinCode);
 
       if (gameStartedResponse) {
