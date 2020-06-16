@@ -1,9 +1,9 @@
-import { model, Schema } from 'mongoose';
+const { model, Schema } = require('mongoose');
 
 const wordsSchema = new Schema({
-  words : [String]
+  words: [String]
 });
 
-const Words = model("Word", wordsSchema); 
+const Words = model("Word", wordsSchema);
 
-export default Words;
+module.exports = Words;

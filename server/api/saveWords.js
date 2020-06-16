@@ -1,7 +1,6 @@
-const { Room } = require('../models');
-const connectToDatabase = require('../mongoose_connections');
+const Room = require('../models/room');
 
-module.exports = async (req, res) => {
+exports.index = async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', '*');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -10,7 +9,6 @@ module.exports = async (req, res) => {
     return res.send(true);
   }
 
-  await connectToDatabase();
   console.log(req.body);
 
   let addResponse = null;
@@ -25,11 +23,11 @@ module.exports = async (req, res) => {
 
   if (req.body.team == 1) {
     console.log('team one');
-    addResponse = await Room.update({ roomCode : req.body.code }, { teamOneWords : dict});
+    addResponse = await Room.update({ roomCode: req.body.code }, { teamOneWords: dict });
   }
   else if (req.body.team == 2) {
     console.log('team two');
-    addResponse = await Room.update({ roomCode : req.body.code }, { teamTwoWords : dict});
+    addResponse = await Room.update({ roomCode: req.body.code }, { teamTwoWords: dict });
   }
 
   return res.send(true);
