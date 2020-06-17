@@ -49,8 +49,14 @@ export default {
     };
   },
   methods: {
-    ...mapActions("room", ["setNewCode", "setNewMeIsMaster", "setNewMe"]),
+    ...mapActions("room", [
+      "clearRoomState",
+      "setNewCode",
+      "setNewMeIsMaster",
+      "setNewMe"
+    ]),
     ...mapActions("user", [
+      "clearUserState",
       "setNewPlayers",
       "addNewPlayer",
       "setTeamOne",
@@ -79,6 +85,7 @@ export default {
     async joinRoomHandler() {
       let gameStartedResponse = await getStartGame(this.joinCode);
 
+      //TODO : Allower users to join a game in the case where they disconnected
       if (gameStartedResponse) {
         alert("game already started. Consult game master.");
         return;
@@ -121,6 +128,10 @@ export default {
   },
   computed: {
     ...mapState("room", ["code"])
+  },
+  mounted() {
+    this.clearRoomState();
+    this.clearUserState();
   }
 };
 </script>

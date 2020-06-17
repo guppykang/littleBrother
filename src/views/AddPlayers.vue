@@ -124,8 +124,10 @@ export default {
     });
 
     this.socket.on("RECEIVE_NEW_PLAYERS", data => {
-      if (data.gameCode == this.code) {
-        this.addNewPlayer(data.newPlayer);
+      if (!this.activePlayers.includes(data.newPlayer)) {
+        if (data.gameCode == this.code) {
+          this.addNewPlayer(data.newPlayer);
+        }
       }
     });
 
@@ -145,9 +147,13 @@ export default {
     this.socket.on("TEAM_ADDED", data => {
       if (data.gameCode == this.code) {
         if (data.team == 1) {
-          this.addNewTeamOne(data.newPlayer);
+          if (!this.teamOne.includes(data.newPlayer)) {
+            this.addNewTeamOne(data.newPlayer);
+          }
         } else if (data.team == 2) {
-          this.addNewTeamTwo(data.newPlayer);
+          if (!this.teamTwo.includes(data.newPlayer)) {
+            this.addNewTeamTwo(data.newPlayer);
+          }
         }
       }
     });

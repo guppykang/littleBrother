@@ -1,3 +1,4 @@
+
 //read the config.yaml
 const fs = require('fs');
 const yaml = require('js-yaml');
@@ -25,6 +26,9 @@ const helmet = require("helmet");
 const logger = require("morgan");
 
 
+//cors bs
+var cors = require('cors')
+app.use(cors()) // Use this after the variable declaration
 // if (!process.env.NODE_ENV) {
 //   app.use(logger("dev"));
 // }

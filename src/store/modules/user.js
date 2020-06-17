@@ -44,6 +44,11 @@ const mutations = {
       state.teamTwo.splice(state.teamTwo.indexOf(username), 1);
     }
     state.teamTwo.push(username);
+  },
+  resetState(state) {
+    state.activePlayers = [];
+    state.teamOne = [];
+    state.teamTwo = [];
   }
 };
 
@@ -65,6 +70,9 @@ const actions = {
   },
   addNewTeamTwo({ commit }, newUsername) {
     commit("addTeamTwo", newUsername);
+  },
+  clearUserState({ commit }) {
+    commit("resetState");
   }
 }
 
