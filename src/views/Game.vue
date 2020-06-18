@@ -321,9 +321,9 @@ export default {
         console.log("Game Over");
         this.isMyTurn = false;
         if (data.team == 1) {
-          alert("Game Over : team 1 won");
+          alert("Game Over : team 1 won. Give me money : dontpaymeee (venmo). ");
         } else if (data.team == 2) {
-          alert("Game Over : team 2 won");
+          alert("Game Over : team 2 won. Give me money : dontpaymeee (venmo). ");
         }
       }
     });
