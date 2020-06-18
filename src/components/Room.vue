@@ -77,7 +77,6 @@ export default {
         this.setNewMe(this.username);
         this.setNewPlayers([this.username]);
         this.setNewMeIsMaster(true);
-        alert("game sucessfully created");
         this.$router.push({ path: "/himom" });
       }
       return response;
@@ -94,7 +93,6 @@ export default {
       let joinedStatus = await joinRoom(this.joinCode, this.usernameJoin);
 
       if (joinedStatus.codeExists && !joinedStatus.usernameExists) {
-        alert("sucessfuly joined room : " + this.joinCode);
 
         console.log(joinedStatus);
 

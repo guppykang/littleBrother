@@ -138,10 +138,6 @@ export default {
     },
     async submitAnswer() {
       this.submitted = true;
-      if (!this.hintsSubmitted) {
-        alert("submit hints first");
-        return;
-      }
 
       this.finalAnswer += this.answer1;
       this.finalAnswer += this.answer2;
@@ -152,7 +148,7 @@ export default {
         stringSequence += this.sequence[i];
       }
       if (stringSequence == "") {
-        alert("Game is broken. Go play something else");
+        alert("string sequence is empty? Game is Broken go play fortnite");
       }
 
       const newScore = await scoreRound(
@@ -164,9 +160,6 @@ export default {
         this.score
       );
 
-      if (newScore == false) {
-        alert("Game is broken. Go play something else");
-      }
 
       this.socket.emit("SUBMITTED", {
         gameCode: this.code,
@@ -193,6 +186,12 @@ export default {
       allHints.push(this.hint1);
       allHints.push(this.hint2);
       allHints.push(this.hint3);
+
+      //give sequence to teammates under the table
+      this.socket.emit("GIVE_SEQUENCE", {
+        gameCode: this.code,
+        sequence: this.sequence
+      });
 
       this.socket.emit("HINTS", {
         gameCode: this.code,
@@ -256,6 +255,7 @@ export default {
     this.socket.on("NEXT_TURN", async data => {
       if (data.gameCode == this.code) {
         this.isMyTurn = !this.isMyTurn;
+        console.log(this.currentHints);
 
         if (data.team == this.myTeam) {
           for (let i = 0; i < 3; i++) {
@@ -318,6 +318,7 @@ export default {
 
     this.socket.on("END_GAME", data => {
       if (data.gameCode == this.code) {
+        console.log("Game Over");
         this.isMyTurn = false;
         if (data.team == 1) {
           alert("Game Over : team 1 won");
@@ -386,14 +387,16 @@ export default {
 
           this.hinter = false;
 
-          if (this.score[0] > 3 || this.score[3] > 2) {
+          if (this.score[0] == 3 || this.score[3] == 2) {
             this.socket.emit("END_GAME", {
-              team: 1
+              team: 1,
+              gameCode: this.code
             });
             return;
-          } else if (this.score[2] > 3 || this.score[1] > 2) {
+          } else if (this.score[2] == 3 || this.score[1] == 2) {
             this.socket.emit("END_GAME", {
-              team: 2
+              team: 2, 
+              gameCode: this.code
             });
             return;
           }

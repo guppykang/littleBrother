@@ -35,10 +35,6 @@ exports.index = async (req, res) => {
             addResponse = await Room.update({ roomCode: req.body.code }, { teamTwoBadPoints: req.body.score[3] });
         }
     }
-    if (addResponse == null) {
-        //shit the bed. Server is not responding or bad data
-        return res.send(false);
-    }
 
     console.log(req.body.score);
 

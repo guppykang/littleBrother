@@ -21,5 +21,7 @@ exports.index = async (req, res) => {
         nextHinter = query[0].teamTwoNextHinter;
     }
 
-    return res.send(nextHinter);
+    console.log(nextHinter);
+
+    return res.json(nextHinter);
 };
