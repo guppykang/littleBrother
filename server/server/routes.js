@@ -15,6 +15,7 @@ const setStartGame = require('../api/setStartGame')
 const getCode = require('../api/getCode')
 const getMyWords = require('../api/getMyWords')
 const saveWords = require('../api/saveWords')
+const scoreRound = require('../api/scoreRound')
 
 //routes that use Words MongoDB Model
 const getWords = require('../api/getWords')
@@ -34,6 +35,7 @@ r.post('/setStartGame', setStartGame.index)
 r.post('/getCode', getCode.index)
 r.get('/getMyWords', getMyWords.index)
 r.post('/saveWords', saveWords.index)
+r.post('/scoreRound', scoreRound.index)
 
 //routes that use Words MongoDB Model
 r.get('/getWords', getWords.index)

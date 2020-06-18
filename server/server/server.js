@@ -88,7 +88,9 @@ io.on('connection', (socket) => {
   socket.on('GUESS_SUBMITTED', (data) => {
     io.emit("GUESS_SUBMITTED", data);
   });
-
+  socket.on('GIVE_SEQUENCE', (data) => {
+    io.emit("GIVE_SEQUENCE", data);
+  });
 
 });
 module.exports = app;

@@ -39,3 +39,17 @@ export async function getStartGame(code) {
 
   return response.data;
 }
+
+export async function scoreRound(code, team, answer, guess, sequence, score) {
+  const payload = {
+    answer: answer,
+    guess: guess,
+    sequence: sequence,
+    score: score,
+    team: team,
+    code: code
+  }
+  const response = await axios.post(`http://localhost:5000/scoreRound`, payload);
+
+  return response.data;
+}

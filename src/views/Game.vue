@@ -31,6 +31,14 @@
         v-if="hinter && isMyTurn"
       >Code : (Give hints that will help your teammates guess the correct sequence){{ sequence }}</span>
 
+      <span
+        class="red-font"
+        v-if="!guessSubmitted && isMyTurn && !hinter"
+      >Other team must guess first</span>
+      <span
+        class="red-font"
+        v-if="isMyTurn && hintsSubmitted && guessSubmitted"
+      >Have one player make submit an answer by entering a number in each box :</span>
       <input v-if="isMyTurn && !hinter" v-model="answer1" placeholder="answer 1" />
       <input v-if="isMyTurn && !hinter" v-model="answer2" placeholder="answer 2" />
       <input v-if="isMyTurn && !hinter" v-model="answer3" placeholder="answer 3" />
@@ -40,13 +48,23 @@
       >final answer submit</button>
       <br />
       <br />
-      <span class="red-font" v-if="!guessSubmitted && isMyTurn">Other team must guess first</span>
       <br />
 
+      <span
+        class="red-font"
+        v-if="!isMyTurn && !hintsSubmitted && !guessSubmitted"
+      >Waiting for other team's hinter to give hints :</span>
+      <span
+        class="red-font"
+        v-if="!isMyTurn && hintsSubmitted && !guessSubmitted"
+      >Have one player make a guess by entering a number in each box :</span>
       <input v-if="!isMyTurn" v-model="guess1" placeholder="guess 1" />
       <input v-if="!isMyTurn" v-model="guess2" placeholder="guess 2" />
       <input v-if="!isMyTurn" v-model="guess3" placeholder="guess 3" />
-      <button v-if="!isMyTurn && !guessSubmitted" @click="submitGuess">final guess submit</button>
+      <button
+        v-if="!isMyTurn && hintsSubmitted && !guessSubmitted"
+        @click="submitGuess"
+      >final guess submit</button>
 
       <span v-if="submitted">you or a teammate submitted the final answer</span>
 
@@ -67,7 +85,7 @@
 
 <script>
 import Navbar from "../components/Navbar";
-import { getMyWords, getCode } from "../api/game";
+import { getMyWords, getCode, scoreRound } from "../api/game";
 import { mapActions, mapState } from "vuex";
 import io from "socket.io-client";
 
@@ -106,7 +124,8 @@ export default {
   methods: {
     ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
     //only to be called by the hinter of the current team
-    async nextTurn(score) {
+    async nextTurn() {
+      //get the index of me(aka the last hinter)
       let index = 0;
       if (this.myTeam == 1) {
         index = this.teamOne.indexOf(this.me);
@@ -114,13 +133,10 @@ export default {
         index = this.teamTwo.indexOf(this.me);
       }
 
-      this.hinter = false;
-
       this.socket.emit("NEXT_TURN", {
         gameCode: this.code,
         index: index,
         team: this.myTeam,
-        score: score,
         sequence: this.sequence
       });
     },
@@ -134,14 +150,41 @@ export default {
       this.finalAnswer += this.answer2;
       this.finalAnswer += this.answer3;
 
+      let stringSequence = "";
+      for (let i = 0; i < this.sequence.length; i++) {
+        stringSequence += this.sequence[i];
+      }
+      if (stringSequence == "") {
+        alert("Game is broken. Go play something else");
+      }
+
+      const newScore = await scoreRound(
+        this.code,
+        this.myTeam,
+        this.finalAnswer,
+        this.finalGuess,
+        stringSequence,
+        this.score
+      );
+
+      if (newScore == false) {
+        alert("Game is broken. Go play something else");
+      }
+
       this.socket.emit("SUBMITTED", {
         gameCode: this.code,
         team: this.myTeam,
-        guess: this.finalAnswer
+        newScore: newScore
       });
     },
     async getNewCode(team, code) {
       this.sequence = await getCode(team, code);
+
+      //give sequence to teammates under the table
+      this.socket.emit("GIVE_SEQUENCE", {
+        gameCode: this.code,
+        sequence: this.sequence
+      });
     },
     async submitHints() {
       if (this.hint1 == "" || this.hint2 == "" || this.hint3 == "") {
@@ -182,7 +225,7 @@ export default {
 
       if (this.teamOne.indexOf(this.me) == 0) {
         this.hinter = true;
-        this.sequence = await getCode(1, this.code);
+        this.getNewCode(1, this.code);
       }
       let wordsRes;
       try {
@@ -199,8 +242,7 @@ export default {
       this.isMyTurn = false;
 
       if (this.teamTwo.indexOf(this.me) == 0) {
-        // this.hinter = true;
-        this.sequence = await getCode(2, this.code);
+        this.getNewCode(2, this.code);
       }
 
       let wordsRes;
@@ -215,50 +257,52 @@ export default {
     }
 
     this.socket.on("NEXT_TURN", data => {
-      if (data.gameCode == this.code && data.team == this.myTeam) {
+      if (data.gameCode == this.code) {
         this.isMyTurn = !this.isMyTurn;
 
-        let next_index = -1;
-
-        for (i = 0; i < 3; i++) {
-          this.myHints[data.sequence[i] - 1].push(this.currentHints[i]);
-        }
-
-        if (data.team == this.myTeam) {
-          this.score = data.score;
-
-          if (data.team == 1) {
-            next_index = data.index + 1;
-            next_index %= this.teamOne.length;
-
-            if (this.teamOne.indexOf(this.me) == next_index) {
-              this.hinter = true;
-              console.log("I'm the new hinter");
-
-              this.getNewCode(1, this.code);
-            }
-          } else {
-            next_index = data.index + 1;
-            next_index %= this.teamTwo.length;
-
-            if (this.teamTwo.indexOf(this.me) == next_index) {
-              this.hinter = true;
-              console.log("I'm the new hinter");
-
-              this.getNewCode(2, this.code);
-            }
-          }
-          console.log(this.hinter);
-        }
-        this.submitted = false;
-      } else if (data.gameCode == this.code && data.team != this.myTeam) {
-        this.isMyTurn = !this.isMyTurn;
-        this.score = data.score;
-
-        for (i = 0; i < 3; i++) {
-          this.otherHints[data.sequence[i] - 1].push(this.currentHints[i]);
+        if (data.team == this.team) {
+        } else {
         }
       }
+      // if (data.gameCode == this.code && data.team == this.myTeam) {
+      //   let next_index = -1;
+
+      //   for (let i = 0; i < 3; i++) {
+      //     this.myHints[data.sequence[i] - 1].push(this.currentHints[i]);
+      //   }
+
+      //   if (data.team == this.myTeam) {
+      //     if (data.team == 1) {
+      //       next_index = data.index + 1;
+      //       next_index %= this.teamOne.length;
+
+      //       if (this.teamOne.indexOf(this.me) == next_index) {
+      //         this.hinter = true;
+      //         console.log("I'm the new hinter");
+
+      //         this.getNewCode(1, this.code);
+      //       }
+      //     } else {
+      //       next_index = data.index + 1;
+      //       next_index %= this.teamTwo.length;
+
+      //       if (this.teamTwo.indexOf(this.me) == next_index) {
+      //         this.hinter = true;
+      //         console.log("I'm the new hinter");
+
+      //         this.getNewCode(2, this.code);
+      //       }
+      //     }
+      //     console.log(this.hinter);
+      //   }
+      //   this.submitted = false;
+      // } else if (data.gameCode == this.code && data.team != this.myTeam) {
+      //   this.isMyTurn = !this.isMyTurn;
+
+      //   for (let i = 0; i < 3; i++) {
+      //     this.otherHints[data.sequence[i] - 1].push(this.currentHints[i]);
+      //   }
+      // }
     });
 
     this.socket.on("END_GAME", data => {
@@ -275,6 +319,7 @@ export default {
     this.socket.on("HINTS", data => {
       if (data.gameCode == this.code) {
         this.currentHints = data.hints;
+        this.hintsSubmitted = true;
       }
     });
 
@@ -285,60 +330,36 @@ export default {
       }
     });
 
+    this.socket.on("GIVE_SEQUENCE", data => {
+      if (data.gameCode == this.code && this.isMyTurn == true) {
+        this.sequence = data.sequence;
+        console.log(this.sequence);
+      }
+    });
+
     this.socket.on("SUBMITTED", data => {
       if (data.gameCode == this.code && data.team == this.myTeam) {
         this.submitted = true;
+        this.score = data.newScore;
+        this.sequence = "";
 
+        //game over conditions done by the most recent hinter
         if (this.hinter) {
-          console.log("I am hinter");
-          console.log("passing on to next hinter");
+          this.hinter = false;
 
-          let stringSequence = "";
-
-          for (i = 0; i < this.sequence.length; i++) {
-            stringSequence += this.sequence[i];
-          }
-
-          if (stringSequence != data.guess) {
-            if (data.team == 1) {
-              this.score[1] += 1;
-            } else {
-              this.score[2] += 1;
-            }
-          }
-
-          if (stringSequence == this.finalGuess) {
-            if (data.team == 1) {
-              this.score[2] += 1;
-            } else {
-              this.score[0] += 1;
-            }
-          }
-
-          if (this.score[0] > 3) {
+          if (this.score[0] > 3 || this.score[3] > 2) {
             this.socket.emit("END_GAME", {
               team: 1
             });
             return;
-          } else if (this.score[2] > 3) {
+          } else if (this.score[2] > 3 || this.score[1] > 2) {
             this.socket.emit("END_GAME", {
               team: 2
-            });
-            return;
-          } else if (this.score[1] > 2) {
-            this.socket.emit("END_GAME", {
-              team: 2
-            });
-            return;
-          } else if (this.score[3] > 2) {
-            this.socket.emit("END_GAME", {
-              team: 1
             });
             return;
           }
 
-          this.sequence = "";
-          this.nextTurn(this.score);
+          this.nextTurn();
         }
       }
     });
