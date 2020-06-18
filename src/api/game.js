@@ -53,3 +53,26 @@ export async function scoreRound(code, team, answer, guess, sequence, score) {
 
   return response.data;
 }
+
+export async function saveNextHinter(code, team, index) {
+  const payload = {
+    code: code,
+    team: team,
+    index: index
+  }
+
+  const response = await axios.post(`http://localhost:5000/saveNextHinter`, payload);
+
+  return response.data;
+}
+
+export async function getNextHinter(code, team) {
+  const payload = {
+    code: code,
+    team: team,
+  }
+
+  const response = await axios.post(`http://localhost:5000/getNextHinter`, payload);
+
+  return response.data;
+}

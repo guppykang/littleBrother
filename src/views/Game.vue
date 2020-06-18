@@ -66,8 +66,6 @@
         @click="submitGuess"
       >final guess submit</button>
 
-      <span v-if="submitted">you or a teammate submitted the final answer</span>
-
       <br />
       <br />
       <br />
@@ -85,7 +83,13 @@
 
 <script>
 import Navbar from "../components/Navbar";
-import { getMyWords, getCode, scoreRound } from "../api/game";
+import {
+  getMyWords,
+  getCode,
+  scoreRound,
+  saveNextHinter,
+  getNextHinter
+} from "../api/game";
 import { mapActions, mapState } from "vuex";
 import io from "socket.io-client";
 
@@ -124,23 +128,16 @@ export default {
   methods: {
     ...mapActions("room", ["setNewTeamOneWords", "setNewTeamTwoWords"]),
     //only to be called by the hinter of the current team
-    async nextTurn() {
-      //get the index of me(aka the last hinter)
-      let index = 0;
-      if (this.myTeam == 1) {
-        index = this.teamOne.indexOf(this.me);
-      } else {
-        index = this.teamTwo.indexOf(this.me);
-      }
-
+    async nextTurn(nextHinter) {
       this.socket.emit("NEXT_TURN", {
         gameCode: this.code,
-        index: index,
+        nextHinter: nextHinter,
         team: this.myTeam,
         sequence: this.sequence
       });
     },
     async submitAnswer() {
+      this.submitted = true;
       if (!this.hintsSubmitted) {
         alert("submit hints first");
         return;
@@ -225,7 +222,7 @@ export default {
 
       if (this.teamOne.indexOf(this.me) == 0) {
         this.hinter = true;
-        this.getNewCode(1, this.code);
+        await this.getNewCode(1, this.code);
       }
       let wordsRes;
       try {
@@ -242,7 +239,7 @@ export default {
       this.isMyTurn = false;
 
       if (this.teamTwo.indexOf(this.me) == 0) {
-        this.getNewCode(2, this.code);
+        await this.getNewCode(2, this.code);
       }
 
       let wordsRes;
@@ -256,53 +253,67 @@ export default {
       console.log(wordsRes);
     }
 
-    this.socket.on("NEXT_TURN", data => {
+    this.socket.on("NEXT_TURN", async data => {
       if (data.gameCode == this.code) {
         this.isMyTurn = !this.isMyTurn;
 
-        if (data.team == this.team) {
+        if (data.team == this.myTeam) {
+          for (let i = 0; i < 3; i++) {
+            this.myHints[data.sequence[i] - 1].push(this.currentHints[i]);
+          }
+          this.sequence = "";
+
+          this.submitted = false;
+          this.finalAnswer = "";
+          this.hint1 = "";
+          this.hint2 = "";
+          this.hint3 = "";
+          this.guess1 = "";
+          this.guess2 = "";
+          this.guess3 = "";
+          this.answer1 = "";
+          this.answer2 = "";
+          this.answer3 = "";
+          this.currentHints = [];
+          this.hintsSubmitted = false;
+          this.finalGuess = "";
+          this.guessSubmitted = false;
         } else {
+          for (let i = 0; i < 3; i++) {
+            this.otherHints[data.sequence[i] - 1].push(this.currentHints[i]);
+          }
+
+          this.submitted = false;
+          this.finalAnswer = "";
+          this.hint1 = "";
+          this.hint2 = "";
+          this.hint3 = "";
+          this.guess1 = "";
+          this.guess2 = "";
+          this.guess3 = "";
+          this.answer1 = "";
+          this.answer2 = "";
+          this.answer3 = "";
+          this.currentHints = [];
+          this.hintsSubmitted = false;
+          this.finalGuess = "";
+          this.guessSubmitted = false;
+
+          if (
+            this.myTeam == 1 &&
+            this.teamOne.indexOf(this.me) == data.nextHinter
+          ) {
+            this.hinter = true;
+            await this.getNewCode(1, this.code);
+          } else if (
+            this.myTeam == 2 &&
+            this.teamTwo.indexOf(this.me) == data.nextHinter
+          ) {
+            this.hinter = true;
+            await this.getNewCode(2, this.code);
+          }
         }
       }
-      // if (data.gameCode == this.code && data.team == this.myTeam) {
-      //   let next_index = -1;
-
-      //   for (let i = 0; i < 3; i++) {
-      //     this.myHints[data.sequence[i] - 1].push(this.currentHints[i]);
-      //   }
-
-      //   if (data.team == this.myTeam) {
-      //     if (data.team == 1) {
-      //       next_index = data.index + 1;
-      //       next_index %= this.teamOne.length;
-
-      //       if (this.teamOne.indexOf(this.me) == next_index) {
-      //         this.hinter = true;
-      //         console.log("I'm the new hinter");
-
-      //         this.getNewCode(1, this.code);
-      //       }
-      //     } else {
-      //       next_index = data.index + 1;
-      //       next_index %= this.teamTwo.length;
-
-      //       if (this.teamTwo.indexOf(this.me) == next_index) {
-      //         this.hinter = true;
-      //         console.log("I'm the new hinter");
-
-      //         this.getNewCode(2, this.code);
-      //       }
-      //     }
-      //     console.log(this.hinter);
-      //   }
-      //   this.submitted = false;
-      // } else if (data.gameCode == this.code && data.team != this.myTeam) {
-      //   this.isMyTurn = !this.isMyTurn;
-
-      //   for (let i = 0; i < 3; i++) {
-      //     this.otherHints[data.sequence[i] - 1].push(this.currentHints[i]);
-      //   }
-      // }
     });
 
     this.socket.on("END_GAME", data => {
@@ -337,14 +348,42 @@ export default {
       }
     });
 
-    this.socket.on("SUBMITTED", data => {
+    this.socket.on("SUBMITTED", async data => {
       if (data.gameCode == this.code && data.team == this.myTeam) {
-        this.submitted = true;
         this.score = data.newScore;
-        this.sequence = "";
 
         //game over conditions done by the most recent hinter
         if (this.hinter) {
+          //get the index of me(aka the last hinter)
+          let index = 0;
+          let nextIndex = 0;
+          if (this.myTeam == 1) {
+            index = this.teamOne.indexOf(this.me);
+            nextIndex = index + 1;
+            nextIndex %= this.teamOne.length;
+          } else {
+            index = this.teamTwo.indexOf(this.me);
+            nextIndex = index + 1;
+            nextIndex %= this.teamTwo.length;
+          }
+
+          let response = await saveNextHinter(
+            this.code,
+            this.myTeam,
+            nextIndex
+          );
+          if (response == null) {
+            alert("Game is messed up. Quit now lol");
+          }
+
+          //get the next hinter for the other team
+          let nextHinter = null;
+          if (this.myTeam == 1) {
+            nextHinter = await getNextHinter(this.code, 2);
+          } else if (this.myTeam == 2) {
+            nextHinter = await getNextHinter(this.code, 1);
+          }
+
           this.hinter = false;
 
           if (this.score[0] > 3 || this.score[3] > 2) {
@@ -358,9 +397,10 @@ export default {
             });
             return;
           }
-
-          this.nextTurn();
+          this.nextTurn(nextHinter);
         }
+      } else if (data.gameCode == this.code && data.team != this.myTeam) {
+        this.score = data.newScore;
       }
     });
   }

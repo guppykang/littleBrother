@@ -18,7 +18,7 @@ exports.index = async (req, res) => {
   let uploadResponse;
   try {
     console.log('creating the new room')
-    uploadResponse = await Room.create({ roomCode: newRoomCode, players: [username], startGame: false, teamOneGoodPoints: 0, teamOneBadPoints: 0, teamTwoGoodPoints: 0, teamTwoBadPoints: 0 });
+    uploadResponse = await Room.create({ roomCode: newRoomCode, players: [username], startGame: false, teamOneGoodPoints: 0, teamOneBadPoints: 0, teamTwoGoodPoints: 0, teamTwoBadPoints: 0, teamOneNextHinter: 0, teamTwoNextHinter: 0 });
     res.send(true);
   }
   catch (err) {

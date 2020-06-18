@@ -13,7 +13,9 @@ const roomScheme = new Schema({
   teamOneGoodPoints: Number,
   teamOneBadPoints: Number,
   teamTwoBadPoints: Number,
-  teamTwoGoodPoints: Number
+  teamTwoGoodPoints: Number,
+  teamOneNextHinter: Number,
+  teamTwoNextHinter: Number
 })
 
 const Room = model("Room", roomScheme);
