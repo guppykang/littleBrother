@@ -4,7 +4,8 @@
     "start": "webpack-dev-server --output-public-path=/dist/ --inline --hot --open --port 4000 --mode='development'",
     "dev": "webpack --watch --mode='development'",
     "build": "webpack --mode='production'",
-    "api": "node scripts/api.js"
+    "api": "node scripts/api.js",
+    "deploy": "git add .; git commit -am \"Deploy to Heroku\"; git push heroku master;"
   },
   "dependencies": {
     "axios": "^0.19.0",
