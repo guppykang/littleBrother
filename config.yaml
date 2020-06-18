@@ -1,0 +1,4 @@
+{
+  "mongodbUri" : "mongodb+srv://<Username>:<password>@titan-fayjc.mongodb.net/test", 
+  "serverUri" : "http://localhost:5000"
+}
