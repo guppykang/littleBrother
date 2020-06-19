@@ -1,4 +1,5 @@
 # Little Brother
+THIS REPOSITORY DOES NOT CONTAIN LATEST DEPLOYED CODE.
 
 Little brother is a multiplayer word game you can play with friends
 
